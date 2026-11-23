@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: webtranslate-ai
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: LIBRETRANSLATE_URL
+        value: ""
+      - key: CACHE_DB
+        value: /tmp/cache.sqlite
