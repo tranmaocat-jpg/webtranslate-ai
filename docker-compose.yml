@@ -1,0 +1,22 @@
+services:
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    environment:
+      LT_LOAD_ONLY: en,vi,zh,ja,ko,fr,de,es,th
+      LT_THREADS: 2
+    volumes:
+      - libretranslate-models:/home/libretranslate/.local/share
+    restart: unless-stopped
+  webtranslate:
+    build: .
+    ports: ["8000:8000"]
+    volumes: ["webtranslate-cache:/data"]
+    environment:
+      CACHE_DB: /data/cache.sqlite
+      LIBRETRANSLATE_URL: http://libretranslate:5000
+      LIBRETRANSLATE_KEY: ${LIBRETRANSLATE_KEY:-}
+    depends_on: [libretranslate]
+    restart: unless-stopped
+volumes:
+  webtranslate-cache:
+  libretranslate-models:
