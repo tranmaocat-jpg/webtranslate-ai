@@ -30,3 +30,8 @@ Online deploy defaults to MyMemory (anonymous quota is limited, often around 5,0
 - CSS/images may load from original base URL but complex CSS asset rewriting can fail.
 - URL validation checks global IPs and redirect destinations. Production needs DNS pinning and outbound egress controls to harden SSRF/DNS rebinding.
 - Do not use this public demo for private/authenticated websites. Translation service has quotas/rate limits.
+
+
+## Free deployment without card (Cloudflare Workers)
+
+See [Worker deployment instructions](worker/DEPLOY.md). Worker code: `worker/index.js`. No LibreTranslate configuration or credit card is needed; anonymous MyMemory translation has quotas.
