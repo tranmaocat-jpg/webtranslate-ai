@@ -1,0 +1,21 @@
+name: Validate Cloudflare Worker
+on:
+  push:
+    paths:
+      - "worker/**"
+      - ".github/workflows/worker-check.yml"
+  pull_request:
+    paths:
+      - "worker/**"
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wrangler dry-run build
+        working-directory: worker
+        run: npx --yes wrangler deploy --dry-run
