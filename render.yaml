@@ -6,7 +6,5 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
-      - key: LIBRETRANSLATE_URL
-        value: ""
       - key: CACHE_DB
         value: /tmp/cache.sqlite
