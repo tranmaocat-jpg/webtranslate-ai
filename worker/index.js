@@ -8,7 +8,7 @@ function checkURL(raw){
  if(h==="localhost"||h.endsWith(".localhost")||h.endsWith(".local")||h.endsWith(".internal")||h==="metadata.google.internal")return null;
  if(/^\[/.test(h))return null;
  const ip=h.match(/^(\d{1,3}\.){3}\d{1,3}$/);
- if(ip){const n=h.split(".").map(Number);if(n.some(v=>v>255)||n[0]===10||n[0]===127||n[0]===0||n[0]===169&&n[1]===254||n[0]===172&&n[1]>=16&&n[1]<=31||n[0]===192&&n[1]===168||n[0]>=224)return null;}
+ if(ip){const n=h.split(".").map(Number);if(n.some(v=>v>255)||n[0]===10||n[0]===127||n[0]===0||n[0]===169&&n[1]===254||n[0]===172&&n[1]>=16&&n[1]<=31||n[0]===192&&n[1]===168||n[0]===100&&n[1]>=64&&n[1]<=127||n[0]===192&&n[1]===0||n[0]===198&&[18,19].includes(n[1])||n[0]>=224)return null;}
  return u;
 }
 async function translate(text,source,target){
@@ -49,7 +49,7 @@ export default {async fetch(request,env,ctx){
  const sourceHTML=new TextDecoder().decode(buffer);
  let count=0,chars=0,errors=0;
  let rewriter=new HTMLRewriter().on("script,iframe,object,embed", {element(e){e.remove();}})
- .on("head", {element(e){if(!e.querySelector){} }})
+ .on("head", {element(e){e.append(`<base href="${url.href.replace(/&/g,"&amp;").replace(/"/g,"&quot;")}">`,{html:true});}})
  .on("a[href]",{element(e){const href=e.getAttribute("href");if(!href)return;try{const dest=new URL(href,url);if(dest.hostname===url.hostname&&["http:","https:"].includes(dest.protocol))e.setAttribute("href","/translate?"+new URLSearchParams({url:dest.href,target,source}));}catch{}}})
  .on("[src]",{element(e){const s=e.getAttribute("src");if(s&&!s.startsWith("data:"))try{e.setAttribute("src",new URL(s,url).href)}catch{}}})
  .on("[alt],[title],[placeholder],[aria-label]",{async element(e){for(const attr of ["alt","title","placeholder","aria-label"]){const v=e.getAttribute(attr);if(v&&count<MAX_TEXT){count++;chars+=v.length;if(chars<MAX_CHARS)try{e.setAttribute(attr,await translate(v,source==="auto"?"en":source,target))}catch{errors++;}}}}})
